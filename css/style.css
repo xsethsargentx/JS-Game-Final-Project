@@ -1,0 +1,18 @@
+body {
+    margin: 0;
+    background: #111;
+    color: #eee;
+    font-family: monospace;
+    text-align: center;
+  }
+  
+  #gameCanvas {
+    display: block;
+    margin: 0 auto;
+    background-color: #222;
+    border: 2px solid #444;
+  }
+  
+  #ui {
+    margin-bottom: 10px;
+  }
