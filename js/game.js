@@ -24,6 +24,8 @@ const player = {
   facing: "right"
 };
 
+let playerVisible = true;
+
 let gameWon = false;
 
 let displayedEnergy = player.energy;
@@ -96,8 +98,9 @@ const platforms = [
   { x: 50, y: 100, width: 100, height: 10}
 ];
 
+// ------ BAT GATES -----
 const batGates = [
-  { x: 650, y: 150, width: 30, height: 100 }
+  { x: 650, y: 0, width: 30, height: 350 }
 ];
 
 function drawGate(gate) {
@@ -242,49 +245,77 @@ function update() {
   }
 
   if (!gameWon && goalPortal.visible && isColliding(player, goalPortal)) {
+    playerVisible = false; // make the player disappear
+    spawnSmoke(player.x + player.width / 2, player.y + player.height / 2); // optional effect
     document.getElementById("winMessage").style.display = "block";
     document.getElementById("resetButton").style.display = "block";
     gameWon = true;
   }
 
   document.getElementById("resetButton").addEventListener("click", () => {
-    function resetGame() {
-      gameWon = false;
-      document.getElementById("winMessage").style.display = "none";
-      document.getElementById("resetButton").style.display = "none";
-    
-      // Reset player
-      player.x = 100;
-      player.y = 300;
-      player.vx = 0;
-      player.vy = 0;
-      player.energy = 100;
-      player.form = "vampire";
-      player.facing = "right";
-    
-      // Reset vials
-      bloodVials.forEach(v => v.collected = false);
-    
-      // Reset portal
-      goalPortal.visible = false;
-      goalPortal.summoned = false;
-      portalSummonTimerStarted = false;
-    
-      // Clear particles
-      particles.length = 0;
-    }
-    
-    document.getElementById("resetButton").addEventListener("click", resetGame); // simple and effective for a demo
+    gameWon = false;
+    document.getElementById("winMessage").style.display = "none";
+    document.getElementById("resetButton").style.display = "none";
+  
+    // Reset player
+    player.x = 100;
+    player.y = 300;
+    player.vx = 0;
+    player.vy = 0;
+    player.energy = 100;
+    player.form = "vampire";
+    player.facing = "right";
+    player.onGround = false;
+    playerVisible = true;
+  
+    // Reset vials
+    bloodVials.forEach(v => v.collected = false);
+  
+    // Reset portal
+    goalPortal.visible = false;
+    goalPortal.summoned = false;
+    portalSummonTimerStarted = false;
+  
+    // Clear particles
+    particles.length = 0;
   });
 
+// ----- COLLISIONS -----
+  // BAT GATES
   if (player.form === "vampire") {
     batGates.forEach(gate => {
       if (isColliding(player, gate)) {
-        if (player.vx > 0) player.x = gate.x - player.width;
-        else if (player.vx < 0) player.x = gate.x + gate.width;
-        if (player.vy > 0) player.y = gate.y - player.height;
-        else if (player.vy < 0) player.y = gate.y + gate.height;
-        player.vx = 0; player.vy = 0;
+        const dx = (player.x + player.width / 2) - (gate.x + gate.width / 2);
+        const dy = (player.y + player.height / 2) - (gate.y + gate.height / 2);
+        const width = (player.width + gate.width) / 2;
+        const height = (player.height + gate.height) / 2;
+        const crossWidth = width * dy;
+        const crossHeight = height * dx;
+  
+        if (Math.abs(dx) <= width && Math.abs(dy) <= height) {
+          if (crossWidth > crossHeight) {
+            if (crossWidth > -crossHeight) {
+              // Collision from the bottom
+              player.y = gate.y + gate.height;
+              player.vy = 0;
+            } else {
+              // Collision from the left
+              player.x = gate.x - player.width;
+              player.vx = 0;
+            }
+          } else {
+            if (crossWidth > -crossHeight) {
+              // Collision from the right
+              player.x = gate.x + gate.width;
+              player.vx = 0;
+            } else {
+              // Collision from the top
+              player.y = gate.y - player.height;
+              player.vy = 0;
+              player.onGround = true;
+            }
+          }
+        }
       }
     });
   }
@@ -317,33 +348,29 @@ function isColliding(a, b) {
 
 // ----- RESET BUTTON -----
 document.getElementById("resetButton").addEventListener("click", () => {
-  function resetGame() {
-    gameWon = false;
-    document.getElementById("winMessage").style.display = "none";
-    document.getElementById("resetButton").style.display = "none";
-  
-    // Reset player
-    player.x = 100;
-    player.y = 300;
-    player.vx = 0;
-    player.vy = 0;
-    player.energy = 100;
-    player.form = "vampire";
-    player.facing = "right";
-  
-    // Reset vials
-    bloodVials.forEach(v => v.collected = false);
-  
-    // Reset portal
-    goalPortal.visible = false;
-    goalPortal.summoned = false;
-    portalSummonTimerStarted = false;
-  
-    // Clear particles
-    particles.length = 0;
-  }
-  
-  document.getElementById("resetButton").addEventListener("click", resetGame);
+  gameWon = false;
+  document.getElementById("winMessage").style.display = "none";
+  document.getElementById("resetButton").style.display = "none";
+
+  // Reset player
+  player.x = 100;
+  player.y = 300;
+  player.vx = 0;
+  player.vy = 0;
+  player.energy = 100;
+  player.form = "vampire";
+  player.facing = "right";
+
+  // Reset vials
+  bloodVials.forEach(v => v.collected = false);
+
+  // Reset portal
+  goalPortal.visible = false;
+  goalPortal.summoned = false;
+  portalSummonTimerStarted = false;
+
+  // Clear particles
+  particles.length = 0;
 });
 
 // ----- RENDER -----
@@ -383,23 +410,25 @@ function render() {
   ctx.globalAlpha = 1;
 
   // Player
-  ctx.save();
-  if (player.facing === "left") {
-    ctx.translate(player.x + player.width / 2, player.y + player.height / 2);
-    ctx.scale(-1, 1);
-    ctx.drawImage(
-      player.form === "vampire" ? vampireImg : batImg,
-      -player.width / 2, -player.height / 2,
-      player.width, player.height
-    );
-  } else {
-    ctx.drawImage(
-      player.form === "vampire" ? vampireImg : batImg,
-      player.x, player.y,
-      player.width, player.height
-    );
+  if (playerVisible) {
+    ctx.save();
+    if (player.facing === "left") {
+      ctx.translate(player.x + player.width / 2, player.y + player.height / 2);
+      ctx.scale(-1, 1);
+      ctx.drawImage(
+        player.form === "vampire" ? vampireImg : batImg,
+        -player.width / 2, -player.height / 2,
+        player.width, player.height
+      );
+    } else {
+      ctx.drawImage(
+        player.form === "vampire" ? vampireImg : batImg,
+        player.x, player.y,
+        player.width, player.height
+      );
+    }
+    ctx.restore();
   }
-  ctx.restore();
 
   // Platforms
   ctx.fillStyle = "gray";
