@@ -2,14 +2,14 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
+// ----- RESET BUTTON -----
+document.getElementById("resetButton").addEventListener("click", () => {
+  location.reload();
+});
+
 // Load background
 const backgroundImg = new Image();
-// backgroundImg.onload = onImageLoad;
 backgroundImg.src = "/images/bgImage.jpg";
-
-// // UI Elements display
-// const formDisplay = document.getElementById("formDisplay");
-// const energyDisplay = document.getElementById("energyDisplay");
 
 // ----- PLAYER -----
 const player = {
@@ -186,10 +186,6 @@ function update() {
   const smoothing = 0.1;
   displayedEnergy += (player.energy - displayedEnergy) * smoothing;
 
-  // // UI display
-  // formDisplay.textContent = player.form;
-  // energyDisplay.textContent = Math.floor(displayedEnergy);
-
   player.vx = 0;
   if (player.form === "vampire") {
     if (keys["arrowleft"] || keys["a"]) player.vx = -player.speed;
@@ -251,34 +247,6 @@ function update() {
     document.getElementById("resetButton").style.display = "block";
     gameWon = true;
   }
-
-  document.getElementById("resetButton").addEventListener("click", () => {
-    gameWon = false;
-    document.getElementById("winMessage").style.display = "none";
-    document.getElementById("resetButton").style.display = "none";
-  
-    // Reset player
-    player.x = 100;
-    player.y = 300;
-    player.vx = 0;
-    player.vy = 0;
-    player.energy = 100;
-    player.form = "vampire";
-    player.facing = "right";
-    player.onGround = false;
-    playerVisible = true;
-  
-    // Reset vials
-    bloodVials.forEach(v => v.collected = false);
-  
-    // Reset portal
-    goalPortal.visible = false;
-    goalPortal.summoned = false;
-    portalSummonTimerStarted = false;
-  
-    // Clear particles
-    particles.length = 0;
-  });
 
 // ----- COLLISIONS -----
   // BAT GATES
