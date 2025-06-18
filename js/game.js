@@ -9,7 +9,7 @@ document.getElementById("resetButton").addEventListener("click", () => {
 
 // Load background
 const backgroundImg = new Image();
-backgroundImg.src = "/images/bgImage.jpg";
+backgroundImg.src = "../images/bgImage.jpg";
 
 // ----- PLAYER -----
 const player = {
@@ -33,10 +33,10 @@ const particles = [];
 
 // ----- SPRITES -----
 const vampireImg = new Image();
-vampireImg.src = "/sprites/vampire.png";
+vampireImg.src = "../sprites/vampire.png";
 
 const batImg = new Image();
-batImg.src = "/sprites/bat.png";
+batImg.src = "../sprites/bat.png";
 
 const goalPortal = {
   x: 0,
@@ -47,7 +47,7 @@ const goalPortal = {
   summoned: false,
   image: new Image()
 };
-goalPortal.image.src = "/sprites/redPortal.png";
+goalPortal.image.src = "../sprites/redPortal.png";
 let portalSummonTimerStarted = false;
 let spawnPortalOverPlayer = false;
 
@@ -77,10 +77,10 @@ function onImageLoad() {
 
 // Loads images
 const imageSources = [
-  { image: backgroundImg, src: "/images/bgImage.jpg" },
-  { image: vampireImg, src: "/sprites/vampire.png" },
-  { image: batImg, src: "/sprites/bat.png" },
-  { image: goalPortal.image, src: "/sprites/redPortal.png" }
+  { image: backgroundImg, src: "../images/bgImage.jpg" },
+  { image: vampireImg, src: "../sprites/vampire.png" },
+  { image: batImg, src: "../sprites/bat.png" },
+  { image: goalPortal.image, src: "../sprites/redPortal.png" }
 ];
 
 imageSources.forEach(({ image, src }) => {
