@@ -7,9 +7,9 @@ const backgroundImg = new Image();
 // backgroundImg.onload = onImageLoad;
 backgroundImg.src = "/images/bgImage.jpg";
 
-// UI Elements
-const formDisplay = document.getElementById("formDisplay");
-const energyDisplay = document.getElementById("energyDisplay");
+// // UI Elements display
+// const formDisplay = document.getElementById("formDisplay");
+// const energyDisplay = document.getElementById("energyDisplay");
 
 // ----- PLAYER -----
 const player = {
@@ -23,6 +23,8 @@ const player = {
   energy: 100,
   facing: "right"
 };
+
+let gameWon = false;
 
 let displayedEnergy = player.energy;
 const particles = [];
@@ -181,9 +183,9 @@ function update() {
   const smoothing = 0.1;
   displayedEnergy += (player.energy - displayedEnergy) * smoothing;
 
-  // UI
-  formDisplay.textContent = player.form;
-  energyDisplay.textContent = Math.floor(displayedEnergy);
+  // // UI display
+  // formDisplay.textContent = player.form;
+  // energyDisplay.textContent = Math.floor(displayedEnergy);
 
   player.vx = 0;
   if (player.form === "vampire") {
@@ -239,10 +241,41 @@ function update() {
     console.log("Spawning portal at", goalPortal.x, goalPortal.y);
   }
 
-  if (goalPortal.visible && isColliding(player, goalPortal)) {
-    resetPlayerPosition();
-    alert("You reached the portal!");
+  if (!gameWon && goalPortal.visible && isColliding(player, goalPortal)) {
+    document.getElementById("winMessage").style.display = "block";
+    document.getElementById("resetButton").style.display = "block";
+    gameWon = true;
   }
+
+  document.getElementById("resetButton").addEventListener("click", () => {
+    function resetGame() {
+      gameWon = false;
+      document.getElementById("winMessage").style.display = "none";
+      document.getElementById("resetButton").style.display = "none";
+    
+      // Reset player
+      player.x = 100;
+      player.y = 300;
+      player.vx = 0;
+      player.vy = 0;
+      player.energy = 100;
+      player.form = "vampire";
+      player.facing = "right";
+    
+      // Reset vials
+      bloodVials.forEach(v => v.collected = false);
+    
+      // Reset portal
+      goalPortal.visible = false;
+      goalPortal.summoned = false;
+      portalSummonTimerStarted = false;
+    
+      // Clear particles
+      particles.length = 0;
+    }
+    
+    document.getElementById("resetButton").addEventListener("click", resetGame); // simple and effective for a demo
+  });
 
   if (player.form === "vampire") {
     batGates.forEach(gate => {
@@ -271,6 +304,8 @@ function update() {
   });
 }
 
+
+// ----- COLLISION DETECTION -----
 function isColliding(a, b) {
   return (
     a.x < b.x + b.width &&
@@ -280,7 +315,36 @@ function isColliding(a, b) {
   );
 }
 
-
+// ----- RESET BUTTON -----
+document.getElementById("resetButton").addEventListener("click", () => {
+  function resetGame() {
+    gameWon = false;
+    document.getElementById("winMessage").style.display = "none";
+    document.getElementById("resetButton").style.display = "none";
+  
+    // Reset player
+    player.x = 100;
+    player.y = 300;
+    player.vx = 0;
+    player.vy = 0;
+    player.energy = 100;
+    player.form = "vampire";
+    player.facing = "right";
+  
+    // Reset vials
+    bloodVials.forEach(v => v.collected = false);
+  
+    // Reset portal
+    goalPortal.visible = false;
+    goalPortal.summoned = false;
+    portalSummonTimerStarted = false;
+  
+    // Clear particles
+    particles.length = 0;
+  }
+  
+  document.getElementById("resetButton").addEventListener("click", resetGame);
+});
 
 // ----- RENDER -----
 function render() {

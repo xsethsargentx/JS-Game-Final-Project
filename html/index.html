@@ -3,15 +3,59 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&display=swap" rel="stylesheet">
   <title>Vlad-Ventures .𖥔 ݁ ˖.</title>
   <link rel="stylesheet" href="/css/style.css" />
 </head>
-<body>
+<body class="cinzel">
   <h1>🦇 Vlad-Ventures 🦇</h1>
-  <div id="ui">
+  <!-- uncommit below and "ui" in js" for visible energy and form percentages  -->
+  <!-- <div id="ui">
     <p>Form: <span id="formDisplay">Vampire</span></p>
     <p>Energy: <span id="energyDisplay">100</span></p>
-  </div>
+  </div> -->
+  <div id="winMessage" style="
+  display: none;
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, -25%);
+  padding: 30px 50px;
+  background: radial-gradient(circle, rgba(20,0,20,0.95), rgba(0,0,0,0.9));
+  color: #ff0033;
+  font-family: 'Cinzel', serif;
+  font-size: 1.5rem;
+  border: 2px solid #ff0033;
+  border-radius: 16px;
+  z-index: 20;
+  text-align: center;
+  box-shadow: 0 0 30px rgba(255, 0, 51, 0.6);
+  text-shadow: 0 0 10px #ff0033, 0 0 20px #990000;
+">
+  🩸 PORTAL MASTERED 🩸<br><span style="font-size: 1.2rem; color: #ffffffaa;">The Blood Path Is Complete.</span>
+</div>
+<button id="resetButton" style="
+  display: none;
+  position: absolute;
+  top: calc(25% + 160px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 30px;
+  font-size: 1rem;
+  font-family: 'Cinzel', serif;
+  background: #1a000a;
+  color: #ff0033;
+  border: 2px solid #ff0033;
+  border-radius: 10px;
+  cursor: pointer;
+  z-index: 20;
+  box-shadow: 0 0 12px rgba(255, 0, 51, 0.4);
+  transition: background 0.3s ease;
+">
+  Restart
+</button>
   <canvas id="gameCanvas" width="800" height="400"></canvas>
   <script src="/js/game.js"></script>
 </body>
