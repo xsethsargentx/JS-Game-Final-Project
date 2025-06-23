@@ -36,7 +36,7 @@ const vampireImg = new Image();
 vampireImg.src = "../sprites/vampire.png";
 
 const batImg = new Image();
-batImg.src = "../sprites/bat.png";
+batImg.src = "/sprites/bat.png";
 
 const goalPortal = {
   x: 0,
